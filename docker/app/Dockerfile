@@ -5,6 +5,9 @@ FROM php:7.4-apache
 ADD php.ini /usr/local/etc/php/
 ADD 000-default.conf /etc/apache2/sites-enabled/
 
+# 時刻を日本時間に設定
+RUN ln -sf  /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+
 # Composerのインストール
 RUN cd /usr/bin && curl -s http://getcomposer.org/installer | php && ln -s /usr/bin/composer.phar /usr/bin/composer
 
