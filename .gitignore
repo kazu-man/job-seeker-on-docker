@@ -1,3 +1,4 @@
 /src
 .DS_Store
 /docker/db/data
+/public/js/app.js
