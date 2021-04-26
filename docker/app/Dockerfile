@@ -5,6 +5,9 @@ FROM php:7.4-apache
 ADD php.ini /usr/local/etc/php/
 ADD 000-default.conf /etc/apache2/sites-enabled/
 
+# 時刻を日本時間に設定
+RUN ln -sf  /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+
 # Composerのインストール
 RUN cd /usr/bin && curl -s http://getcomposer.org/installer | php && ln -s /usr/bin/composer.phar /usr/bin/composer
 
@@ -17,7 +20,10 @@ unzip \
 vim \
 libpng-dev \
 libpq-dev \
-&& docker-php-ext-install pdo_mysql
+&& docker-php-ext-install pdo_mysql \
+&& composer require league/flysystem-aws-s3-v3 ^1.0 \
+&& composer require guzzlehttp/guzzle \
+&& composer require aws/aws-sdk-php
 
 # Laravelで必要になるmodRewriteを有効化する
 RUN mv /etc/apache2/mods-available/rewrite.load /etc/apache2/mods-enabled
