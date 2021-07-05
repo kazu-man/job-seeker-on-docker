@@ -15,6 +15,9 @@ services:
    volumes:
      - ./src:/var/www/html
    working_dir: /var/www/html/job-seeker-laravel
+   networks:
+     - esnet
+
    # MySQLを動かすコンテナ
  db:
    # Docker HubからMySQL5.7の公式イメージをダウンロードしてくる指定
@@ -35,3 +38,66 @@ services:
      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
    ports:
      - 3306:3306
+   networks:
+     - esnet
+#ElasticSearchのコンテナ
+ es:
+   image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
+   ports:
+     - 9200:9200
+   environment:
+     - discovery.type=single-node
+     - node.master=true
+     - node.data=true
+     - xpack.security.enabled=false
+     - bootstrap.memory_lock=true
+     - "ES_JAVA_OPTS=-Xms2048m -Xmx2048m"
+   volumes:
+     - ./docker/es/esdata:/usr/share/elasticsearch/data
+   ulimits:
+     memlock:
+       soft: -1
+       hard: -1
+   logging:
+     driver: 'json-file'
+     options:
+       max-size: '10m'
+       max-file: '3'
+   networks:
+     - esnet
+   container_name: job_seeker_laravel_es
+
+#kibanaのコンテナ
+ kibana:
+   image: docker.elastic.co/kibana/kibana:7.5.1
+   ports:
+     - 5601:5601
+   environment:
+     ELASTICSEARCH_HOSTS: http://es:9200
+   networks:
+     - esnet
+   container_name: job_seeker_laravel_kibana
+
+# Elasticsearchとその他のコンテナを同じdocker network上に起動させるため、networksを作成
+networks:
+  esnet:
+
+
+volumes:
+  esdata:
+    driver: local
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
