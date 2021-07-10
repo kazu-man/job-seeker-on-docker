@@ -31,9 +31,6 @@ RUN curl -sL https://deb.nodesource.com/setup_11.x | bash -
 RUN apt-get install -y nodejs
 RUN npm install npm@latest -g
 
-RUN rm /var/log/apache2/access.log \
-    rm /var/log/apache2/error.log \
-    rm /var/log/apache2/other_vhosts_access.log \
-    touch /var/log/apache2/access.log \
-    touch /var/log/apache2/error.log \
-    touch /var/log/apache2/other_vhosts_access.log \
+# filebeatのインストール
+RUN cd /etc && curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.13.3-linux-x86_64.tar.gz && tar xzvf filebeat-7.13.3-linux-x86_64.tar.gz \
+    && cd filebeat-7.13.3-linux-x86_64 && ./filebeat modules enable apache

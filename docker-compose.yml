@@ -13,8 +13,11 @@ services:
    container_name: job_seeker_laravel_app
    # コンテナとホスト側のディレクトリを同期する場所の指定。laravelのソースが入る予定の場所
    volumes:
-     - ./src:/var/www/html
+    - ./src:/var/www/html
+    - ./docker/app/logs:/var/log/apache2
+    - ./docker/app/filebeat/filebeat.yml:/etc/filebeat-7.13.3-linux-x86_64/filebeat.yml
    working_dir: /var/www/html/job-seeker-laravel
+   command: /bin/bash -c '/etc/init.d/apache2 start && cd /etc/filebeat-7.13.3-linux-x86_64 && ./filebeat -e'
    networks:
      - esnet
 
