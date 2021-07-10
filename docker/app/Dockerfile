@@ -4,7 +4,7 @@ FROM php:7.4-apache
 # 設定ファイルをdockerコンテナ内のPHP、Apacheに読み込ませる
 ADD php.ini /usr/local/etc/php/
 ADD 000-default.conf /etc/apache2/sites-enabled/
-
+ENV APACHE_LOG_DIR="/var/log/apache2"
 # Composerのインストール
 RUN cd /usr/bin && curl -s http://getcomposer.org/installer | php && ln -s /usr/bin/composer.phar /usr/bin/composer
 
@@ -30,3 +30,10 @@ RUN apt-get install -y \
 RUN curl -sL https://deb.nodesource.com/setup_11.x | bash -
 RUN apt-get install -y nodejs
 RUN npm install npm@latest -g
+
+RUN rm /var/log/apache2/access.log \
+    rm /var/log/apache2/error.log \
+    rm /var/log/apache2/other_vhosts_access.log \
+    touch /var/log/apache2/access.log \
+    touch /var/log/apache2/error.log \
+    touch /var/log/apache2/other_vhosts_access.log \

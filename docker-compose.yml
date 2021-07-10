@@ -41,7 +41,7 @@ services:
    networks:
      - esnet
 #ElasticSearchのコンテナ
- es:
+ elasticsearch:
    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
    ports:
      - 9200:9200
@@ -72,11 +72,30 @@ services:
    image: docker.elastic.co/kibana/kibana:7.5.1
    ports:
      - 5601:5601
+   volumes:
+     - "./docker/kibana/:/usr/share/kibana/config/"
    environment:
-     ELASTICSEARCH_HOSTS: http://es:9200
+     ELASTICSEARCH_HOSTS: http://elasticsearch:9200
    networks:
      - esnet
    container_name: job_seeker_laravel_kibana
+
+ logstash:
+   image: docker.elastic.co/logstash/logstash:7.13.2
+   tty: true
+   ports:
+    - 5044:5044
+   volumes:
+    - "./docker/logstash/pipeline/:/usr/share/logstash/pipeline/"
+   networks:
+    - esnet
+   container_name: job_seeker_laravel_logstash
+   links:
+    - elasticsearch:elasticsearch
+   depends_on:
+    - elasticsearch
+    
+
 
 # Elasticsearchとその他のコンテナを同じdocker network上に起動させるため、networksを作成
 networks:
