@@ -4,4 +4,3 @@
 /docker/es/esdata
 /public/js/app.js
 /docker/app/logs
-/docker/app/filebeat-7.13.2-linux-x86_64
